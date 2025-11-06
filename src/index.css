@@ -1,0 +1,103 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Design system — WhatsApp × Viber inspired dark theme (all HSL) */
+
+@layer base {
+  :root {
+    /* --- Base surfaces --- */
+    --background: 240 15% 5%;
+    --foreground: 0 0% 98%;
+
+    --card: 240 15% 8%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 240 15% 8%;
+    --popover-foreground: 0 0% 98%;
+
+    /* --- Core brand colors --- */
+    /* WhatsApp-green (primary)  */
+    --primary: 152 72% 52%; /* #25D366 */
+    --primary-foreground: 0 0% 100%;
+
+    /* Viber-violet (secondary) */
+    --secondary: 266 78% 60%; /* #8F5DEB */
+    --secondary-foreground: 0 0% 100%;
+
+    /* Supporting / accent tone – minty bridge between green↔purple */
+    --accent: 160 70% 60%; /* soft turquoise */
+    --accent-foreground: 240 15% 5%;
+
+    /* --- Functional --- */
+    --muted: 240 10% 15%;
+    --muted-foreground: 0 0% 70%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 240 15% 15%;
+    --input: 240 15% 15%;
+    --ring: 152 72% 52%;
+
+    /* --- Radii --- */
+    --radius: 0.75rem;
+
+    /* --- Glows & gradients --- */
+    --neon-green: 152 72% 52%;
+    --neon-purple: 266 78% 60%;
+    --neon-accent: 160 70% 60%;
+
+    /* gradients */
+    --gradient-primary: linear-gradient(
+      135deg,
+      hsl(152 72% 52% / 0.15),
+      hsl(266 78% 60% / 0.15)
+    );
+
+    --gradient-hero: linear-gradient(
+      180deg,
+      hsl(240 15% 5%),
+      hsl(240 15% 8%)
+    );
+
+    /* glows */
+    --glow-green: 0 0 40px hsl(152 72% 52% / 0.35);
+    --glow-purple: 0 0 40px hsl(266 78% 60% / 0.35);
+    --glow-accent: 0 0 40px hsl(160 70% 60% / 0.35);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@layer utilities {
+  /* Glow helpers */
+  .glow-green {
+    box-shadow: var(--glow-green);
+  }
+  .glow-purple {
+    box-shadow: var(--glow-purple);
+  }
+  .glow-accent {
+    box-shadow: var(--glow-accent);
+  }
+
+  /* Radial hero background */
+  .bg-gradient-radial {
+    background:
+      radial-gradient(circle at 50% 0%, hsl(152 72% 52% / 0.06), transparent 55%),
+      radial-gradient(circle at 80% 50%, hsl(266 78% 60% / 0.06), transparent 55%);
+  }
+}

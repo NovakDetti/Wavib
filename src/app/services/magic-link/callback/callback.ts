@@ -1,0 +1,79 @@
+import type { NextApiRequest, NextApiResponse } from "next";
+import jwt from "jsonwebtoken";
+
+const G = "https://graph.facebook.com/v19.0";
+
+async function gget(path: string, params: Record<string, string>) {
+  const url = new URL(`${G}${path}`);
+  Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v));
+  const r = await fetch(url.toString());
+  if (!r.ok) throw new Error(await r.text());
+  return r.json();
+}
+
+async function gpost(path: string, accessToken: string, body: Record<string, any> = {}) {
+  const r = await fetch(`${G}${path}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ ...body, access_token: accessToken }),
+  });
+  if (!r.ok) throw new Error(await r.text());
+  return r.json();
+}
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  const { code, state } = req.query;
+  if (typeof code !== "string" || typeof state !== "string") return res.status(400).send("Missing params");
+
+  try {
+    // a STATE visszafejtése → tudjuk, kit kötünk össze
+    const { userId, email } = jwt.verify(state, process.env.JWT_SECRET!) as any;
+
+    // 1) short-lived token csere
+    const token1 = await gget("/oauth/access_token", {
+      client_id: process.env.META_APP_ID!,
+      redirect_uri: process.env.META_REDIRECT_URI!,
+      client_secret: process.env.META_APP_SECRET!,
+      code,
+    });
+    let accessToken: string = token1.access_token;
+
+    // 2) (opcionális, ajánlott) long-lived-re csere
+    const token2 = await gget("/oauth/access_token", {
+      grant_type: "fb_exchange_token",
+      client_id: process.env.META_APP_ID!,
+      client_secret: process.env.META_APP_SECRET!,
+      fb_exchange_token: accessToken,
+    });
+    accessToken = token2.access_token;
+
+    // 3) Business → WABA → telefon
+    const me = await gget("/me", { fields: "businesses{id,name}", access_token: accessToken });
+    const businessId = me?.businesses?.data?.[0]?.id;
+    if (!businessId) throw new Error("No business found for user");
+
+    const wabas = await gget(`/${businessId}/owned_whatsapp_business_accounts`, {
+      fields: "id,name",
+      access_token: accessToken,
+    });
+    const wabaId = wabas?.data?.[0]?.id;
+    if (!wabaId) throw new Error("No WABA found");
+
+    const phones = await gget(`/${wabaId}/phone_numbers`, { access_token: accessToken });
+    const phone = phones?.data?.[0];
+    if (!phone?.id) throw new Error("No WhatsApp phone number on this WABA");
+    const phoneNumberId = phone.id as string;
+
+    // 4) webhook subscription az adott phone_number_id-re
+    await gpost(`/${phoneNumberId}/subscribed_apps`, accessToken);
+
+    // 5) Itt mentsd el DB-be (pseudo):
+    // await db.connection.upsert({ userId, email, wabaId, phoneNumberId, accessToken })
+
+    // 6) visszairányítás UI-ra
+    const ui = `${process.env.APP_URL}/connect/success?phone=${encodeURIComponent(phone.display_phone_number ?? "")}`;
+    return res.redirect(ui);
+  } catch (e: any) {
+    return res.status(500).send(e.message ?? "OAuth callback error");
+  }
+}
