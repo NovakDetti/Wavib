@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
     console.log("📩 Incoming webhook:", JSON.stringify(data, null, 2));
 
     // itt lehet továbbküldeni az n8n webhookra:
-    await fetch(`${process.env.N8N_BASE_URL}${process.env.N8N_WHATSAPP_INBOUND_WEBHOOK}`, {
+   await fetch(`${process.env.N8N_BASE_URL}${process.env.N8N_WHATSAPP_INBOUND_WEBHOOK}`, { 
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
