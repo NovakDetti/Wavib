@@ -19,22 +19,30 @@ export async function GET(req: NextRequest) {
   return new NextResponse("Forbidden", { status: 403 });
 }
 
-// HANDLE INCOMING MESSAGES (POST)
 export async function POST(req: NextRequest) {
   try {
     const data = await req.json();
     console.log("📩 Incoming webhook:", JSON.stringify(data, null, 2));
 
-    // itt lehet továbbküldeni az n8n webhookra:
-   await fetch(`${process.env.N8N_BASE_URL}${process.env.N8N_WHATSAPP_INBOUND_WEBHOOK}`, { 
+    const n8nUrl = `${process.env.N8N_BASE_URL}${process.env.N8N_WHATSAPP_INBOUND_WEBHOOK}`;
+
+    const response = await fetch(n8nUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     });
 
-    return NextResponse.json({ received: true });
+    if (!response.ok) {
+      console.error("❌ Failed to forward to n8n:", response.status, await response.text());
+      return NextResponse.json(
+        { error: "Failed to forward to n8n" },
+        { status: 502 }
+      );
+    }
+
+    return NextResponse.json({ ok: true });
   } catch (err) {
-    console.error("Webhook error:", err);
+    console.error("⚠️ Webhook error:", err);
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
 }
