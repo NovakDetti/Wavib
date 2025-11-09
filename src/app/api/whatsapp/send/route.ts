@@ -13,14 +13,19 @@ export async function POST(req: NextRequest) {
   }
 
 const rows = await sql<any>`
-  SELECT access_token_cipher, access_token_iv
+  SELECT access_token_cipher
   FROM "ConvoPilot".whatsapp_connections
   WHERE phone_number_id = ${phone_number_id}
   LIMIT 1
 `;
-if (!rows.length) return NextResponse.json({ error: "No mapping" }, { status: 404 });
 
-const token = decryptToken(rows[0].access_token_cipher, rows[0].access_token_iv);
+if (!rows.length) {
+  return NextResponse.json({ error: "No mapping" }, { status: 404 });
+}
+
+// For now: token is stored in plaintext
+const token = rows[0].access_token_cipher as string;
+
 
   const res = await fetch(
     `https://graph.facebook.com/v21.0/${phoneId}/messages`,
