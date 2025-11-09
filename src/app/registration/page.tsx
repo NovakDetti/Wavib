@@ -1,3 +1,6 @@
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 import SignUpFormClient from "@/components/auth-components/signup-form-client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui-elements/card";
 import { Sparkles } from "lucide-react";
