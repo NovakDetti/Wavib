@@ -12,21 +12,15 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Missing fields" }, { status: 400 });
   }
 
-  const rows = await sql<any>`
-    SELECT access_token_cipher, access_token_iv
-    FROM "ConvoPilot".whatsapp_connections
-    WHERE phone_number_id = ${phoneId}
-    LIMIT 1
-  `;
-  if (!rows.length) {
-    console.error("No mapping for", { raw: phone_number_id, phoneId });
-    return NextResponse.json({ error: "No mapping" }, { status: 404 });
-  }
+const rows = await sql<any>`
+  SELECT access_token_cipher, access_token_iv
+  FROM "ConvoPilot".whatsapp_connections
+  WHERE phone_number_id = ${phone_number_id}
+  LIMIT 1
+`;
+if (!rows.length) return NextResponse.json({ error: "No mapping" }, { status: 404 });
 
-  const token = decryptToken(
-    rows[0].access_token_cipher,
-    rows[0].access_token_iv
-  );
+const token = decryptToken(rows[0].access_token_cipher, rows[0].access_token_iv);
 
   const res = await fetch(
     `https://graph.facebook.com/v21.0/${phoneId}/messages`,
