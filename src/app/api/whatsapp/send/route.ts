@@ -1,32 +1,35 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sql } from "@/lib/db";
-// import { decryptToken } from "@/lib/crypto";  // <- EGYELŐRE NE KELLJEN
+import { decryptToken } from "@/lib/crypto";
 
 export async function POST(req: NextRequest) {
   const { phone_number_id, to, text } = await req.json();
-  if (!phone_number_id || !to || !text) {
+
+  const phoneId = String(phone_number_id || "").trim(); // <-- fontos
+  const toClean = String(to || "").trim();
+
+  if (!phoneId || !toClean || !text) {
     return NextResponse.json({ error: "Missing fields" }, { status: 400 });
   }
 
   const rows = await sql<any>`
     SELECT access_token_cipher, access_token_iv
     FROM "ConvoPilot".whatsapp_connections
-    WHERE phone_number_id = ${phone_number_id}
+    WHERE phone_number_id = ${phoneId}
     LIMIT 1
   `;
-
   if (!rows.length) {
+    console.error("No mapping for", { raw: phone_number_id, phoneId });
     return NextResponse.json({ error: "No mapping" }, { status: 404 });
   }
 
-  // IDEIGLENES: a token simán plain text-ben van tárolva
-  const token: string = rows[0].access_token_cipher;
-
-  // ha szeretnél logot:
-  // console.log("Using WA token from DB (first 8 chars):", token.slice(0, 8) + "...");
+  const token = decryptToken(
+    rows[0].access_token_cipher,
+    rows[0].access_token_iv
+  );
 
   const res = await fetch(
-    `https://graph.facebook.com/v21.0/${phone_number_id}/messages`,
+    `https://graph.facebook.com/v21.0/${phoneId}/messages`,
     {
       method: "POST",
       headers: {
@@ -35,7 +38,7 @@ export async function POST(req: NextRequest) {
       },
       body: JSON.stringify({
         messaging_product: "whatsapp",
-        to,
+        to: toClean,
         type: "text",
         text: { body: text },
       }),
