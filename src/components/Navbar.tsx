@@ -2,13 +2,18 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Button } from "@/components/ui-elements/button";
 import { Sparkles } from "lucide-react";
+import { useSession } from "next-auth/react";
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
+
+  const { data: session, status } = useSession();
+  const isLoggedIn = status === "authenticated";
   const isDashboard = pathname?.startsWith("/dashboard");
 
   useEffect(() => {
@@ -18,6 +23,13 @@ export function Navbar() {
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+
+  useEffect(() => {
+    if (isLoggedIn && !isDashboard) {
+      router.push("/dashboard");
+    }
+  }, [isLoggedIn, isDashboard, router]);
 
   return (
     <nav
@@ -37,7 +49,7 @@ export function Navbar() {
             </span>
           </div>
 
-          {/* Desktop navigation */}
+          {/* Desktop nav */}
           <div className="hidden md:flex items-center gap-8">
             {!isDashboard && (
               <>
@@ -62,12 +74,19 @@ export function Navbar() {
               </>
             )}
 
-            {isDashboard ? (
-              <Link href="/dashboard/settings/business">
-                <Button variant="outline" size="sm">
-                  Settings
-                </Button>
-              </Link>
+            {isLoggedIn ? (
+              <>
+                <Link href="/dashboard">
+                  <Button variant="ghost" size="sm">
+                    Dashboard
+                  </Button>
+                </Link>
+                <Link href="/dashboard/settings/business">
+                  <Button variant="outline" size="sm">
+                    Settings
+                  </Button>
+                </Link>
+              </>
             ) : (
               <>
                 <Link href="/login">
@@ -75,23 +94,31 @@ export function Navbar() {
                     Login
                   </Button>
                 </Link>
-                <Button
-                  size="sm"
-                  className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold glow-cyan"
-                >
-                  Try it free
-                </Button>
+                <Link href="/registration">
+                  <Button
+                    size="sm"
+                    className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold glow-cyan"
+                  >
+                    Try it free
+                  </Button>
+                </Link>
               </>
             )}
           </div>
 
-          {/* Mobile button */}
           <div className="md:hidden">
             <Button
               size="sm"
               className="bg-primary hover:bg-primary/90 text-primary-foreground"
+              onClick={() => {
+                if (isLoggedIn) {
+                  router.push("/dashboard");
+                } else {
+                  router.push("/registration");
+                }
+              }}
             >
-              Try free
+              {isLoggedIn ? "Go to dashboard" : "Try free"}
             </Button>
           </div>
         </div>

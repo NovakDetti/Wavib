@@ -16,6 +16,7 @@ try {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "x-api-key": process.env.N8N_API_KEY!,
         ...(secret ? { "x-n8n-signature": secret } : {}),
       },
       body: JSON.stringify({ event, payload, ts: Date.now() }),

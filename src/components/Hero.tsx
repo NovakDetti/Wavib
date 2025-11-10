@@ -2,12 +2,11 @@
 
 import { Button } from "@/components/ui-elements/button";
 import { Card } from "@/components/ui-elements/card";
-import { Play, TrendingUp, Calendar, MessageSquare } from "lucide-react";
+import { Play, TrendingUp, Calendar, MessageSquare, Link } from "lucide-react";
 
 export const Hero = () => {
   return (
     <section className="relative pt-56 pb-24 px-4 sm:px-6 lg:px-8 overflow-hidden">
-      {/* háttér glow */}
       <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(60%_60%_at_50%_0%,rgba(143,93,235,0.15),transparent_70%)]" />
 
       <div className="container mx-auto relative z-10">
@@ -25,12 +24,14 @@ export const Hero = () => {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button
-              size="lg"
-              className="bg-[#25D366] hover:bg-[#1EB85C] text-white font-semibold text-lg px-8 shadow-[0_0_30px_rgba(37,211,102,0.35)]"
-            >
-              Ingyen kipróbálom
-            </Button>
+            <Link href="/registration">
+              <Button
+                size="lg"
+                className="bg-[#25D366] hover:bg-[#1EB85C] text-white font-semibold text-lg px-8 shadow-[0_0_30px_rgba(37,211,102,0.35)]"
+              >
+                Ingyen kipróbálom
+              </Button>
+            </Link>
             <Button
               size="lg"
               variant="outline"
@@ -42,11 +43,9 @@ export const Hero = () => {
           </div>
         </div>
         <div className="mt-24 md:mt-28">
-        {/* Dashboard Mockup */}
         <div className="max-w-6xl mx-auto scale-[1.05] sm:scale-[1.08] transition-transform duration-700 ease-out">
           <Card className="bg-card/50 backdrop-blur-md border-border/40 p-8 md:p-10 rounded-2xl shadow-[0_0_50px_rgba(139,92,246,0.25)] glow-purple animate-float">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-              {/* 1️⃣ Teljesítmény */}
               <div className="bg-muted/40 p-6 rounded-xl border border-border/40">
                 <div className="flex items-center gap-3 mb-3">
                   <TrendingUp className="w-6 h-6 text-[#8F5DEB]" />
@@ -56,7 +55,7 @@ export const Hero = () => {
                 <div className="text-sm text-muted-foreground">ma • WhatsApp + Viber</div>
               </div>
 
-              {/* 2️⃣ Ütemezve */}
+            
               <div className="bg-muted/40 p-6 rounded-xl border border-border/40">
                 <div className="flex items-center gap-3 mb-3">
                   <Calendar className="w-6 h-6 text-[#25D366]" />
@@ -66,7 +65,7 @@ export const Hero = () => {
                 <div className="text-sm text-muted-foreground">következő 7 napban</div>
               </div>
 
-              {/* 3️⃣ AI által megválaszolt */}
+              
               <div className="bg-muted/40 p-6 rounded-xl border border-border/40">
                 <div className="flex items-center gap-3 mb-3">
                   <MessageSquare className="w-6 h-6 text-[#8F5DEB]" />
@@ -77,7 +76,7 @@ export const Hero = () => {
               </div>
             </div>
 
-            {/* AI-generált üzenet */}
+            
             <div className="bg-muted/30 p-6 rounded-xl border border-[#25D366]/30">
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#25D366] to-[#8F5DEB] flex items-center justify-center flex-shrink-0">

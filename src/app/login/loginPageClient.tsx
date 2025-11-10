@@ -38,7 +38,6 @@ export default function LoginPageClient() {
   const handleSocialLogin = async (provider: string) => {
     setSocialLoading(provider);
 
-    // egyelőre csak placeholder
     setTimeout(() => {
       setSocialLoading(null);
       toast({
@@ -73,7 +72,7 @@ export default function LoginPageClient() {
         title: "Sikeres bejelentkezés!",
         description: "Irány a kezelőfelület...",
       });
-      router.push("/");
+      router.push("/dashboard");
     }, 1500);
   };
 
@@ -125,7 +124,7 @@ export default function LoginPageClient() {
               variant="google"
               size="lg"
               className="w-full"
-              onClick={() => signIn("google", { callbackUrl: "/" })}
+              onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
               disabled={!!isSocialLoading}
             >
               {isSocialLoading === "Google" ? (
