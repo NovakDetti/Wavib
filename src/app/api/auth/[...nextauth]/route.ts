@@ -3,17 +3,33 @@ import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 
 async function notifyN8N(event: string, payload: any) {
-  const url = process.env.N8N_WEBHOOK_URL!; // pl. https://n8n.your.com/webhook/<slug>
-  const secret = process.env.N8N_SHARED_SECRET; // opcionális
+  const url = process.env.N8N_WEBHOOK_URL!; 
+  const secret = process.env.N8N_SHARED_SECRET; 
 
-  await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      ...(secret ? { "x-n8n-signature": secret } : {}),
-    },
-    body: JSON.stringify({ event, payload, ts: Date.now() }),
-  }).catch(() => {}); 
+  if (!url) {
+    console.error("[notifyN8N] N8N_WEBHOOK_URL is missing");
+    return;
+  }
+
+try {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...(secret ? { "x-n8n-signature": secret } : {}),
+      },
+      body: JSON.stringify({ event, payload, ts: Date.now() }),
+    });
+
+    console.log("[notifyN8N] sent", event, "status:", res.status);
+
+    if (!res.ok) {
+      const text = await res.text().catch(() => "");
+      console.error("[notifyN8N] n8n error:", res.status, text);
+    }
+  } catch (err) {
+    console.error("[notifyN8N] fetch failed:", err);
+  }
 }
 
 const authOptions = {
