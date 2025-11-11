@@ -69,8 +69,8 @@ export default function ProfilePage() {
       }
 
       try {
-        const res = await fetch("/api/user", {
-          method: "POST",
+        const res = await fetch("/get-user", {
+          method: "GET",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email: session.user.email }),
         });

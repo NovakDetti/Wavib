@@ -2,7 +2,8 @@
 
 import { Button } from "@/components/ui-elements/button";
 import { Card } from "@/components/ui-elements/card";
-import { Play, TrendingUp, Calendar, MessageSquare, Link } from "lucide-react";
+import Link from "next/link";
+import { Play, TrendingUp, Calendar, MessageSquare } from "lucide-react";
 
 export const Hero = () => {
   return (
