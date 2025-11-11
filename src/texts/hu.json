@@ -1,0 +1,9 @@
+{
+    "cookieBanner": {
+        "cookie.title": "COOKIE BEÁLLÍTÁSOK",
+        "cookie.text": "A wavib.app sütiket használ a működéshez és az anonim forgalom elemzéséhez. A nem feltétlenül szükséges sütiket csak az Elfogadom gomb megnyomása után töltjük be.",
+        "cookie.link": "Cookie szabályzat",
+        "cookie.accept": "Elfogadom",
+        "cookie.decline": "Elutasítom"
+    }
+}

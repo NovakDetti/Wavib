@@ -4,8 +4,6 @@ import { sql } from "@/lib/db";
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-
-    // Normalize/trim everything coming from n8n
     const phone_number_id = String(body.phone_number_id || "").trim();
     const to = String(body.to || "").trim();
     const text = String(body.text || "").trim();
