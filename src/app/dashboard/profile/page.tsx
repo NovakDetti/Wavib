@@ -60,69 +60,69 @@ export default function ProfilePage() {
     }
   }, [status, router]);
 
-  useEffect(() => {
-    const loadProfile = async () => {
-      if (status !== "authenticated") return;
-      if (!session?.user?.email) {
-        setLoadingProfile(false);
-        return;
-      }
+useEffect(() => {
+  const loadProfile = async () => {
+    if (status !== "authenticated") return;
+    if (!session?.user?.email) {
+      setLoadingProfile(false);
+      return;
+    }
 
-      try {
-        const res = await fetch("/get-user", {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email: session.user.email }),
-        });
+    try {
+      const res = await fetch("/api/user", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: session.user.email }),
+      });
 
-        const json = await res.json();
+      const json = await res.json();
 
-        if (!json.success || !json.user) {
-          const nowIso = new Date().toISOString();
-          const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-          const locale = navigator.language || "hu-HU";
-
-          setProfile({
-            id: "—",
-            name: session.user.name ?? "",
-            email: session.user.email ?? "",
-            createdAt: nowIso,
-            timezone: tz,
-            locale,
-            picture: session.user.image ?? undefined,
-          });
-          return;
-        }
-
-        const dbUser = json.user;
-
+      if (!json.success || !json.user) {
         const nowIso = new Date().toISOString();
         const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
         const locale = navigator.language || "hu-HU";
 
         setProfile({
-          id: dbUser.id?.toString?.() ?? "—",
-          name: dbUser.name ?? session.user.name ?? "",
-          email: dbUser.email ?? session.user.email ?? "",
-          createdAt: dbUser.created_at ?? nowIso,
-          timezone: dbUser.timezone ?? tz,
-          locale: dbUser.locale ?? locale,
-          picture: dbUser.picture ?? session.user.image ?? undefined,
+          id: "—",
+          name: session.user.name ?? "",
+          email: session.user.email ?? "",
+          createdAt: nowIso,
+          timezone: tz,
+          locale,
+          picture: session.user.image ?? undefined,
         });
-      } catch (err) {
-        console.error("Failed to load profile:", err);
-        toast({
-          title: "Hiba a profil betöltésekor",
-          description: "Próbáld újra később.",
-          variant: "destructive",
-        });
-      } finally {
-        setLoadingProfile(false);
+        return;
       }
-    };
 
-    loadProfile();
-  }, [status, session, toast]);
+      const dbUser = json.user;
+      const nowIso = new Date().toISOString();
+      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      const locale = navigator.language || "hu-HU";
+
+      setProfile({
+        id: dbUser.id?.toString?.() ?? "—",
+        name: dbUser.name ?? session.user.name ?? "",
+        email: dbUser.email ?? session.user.email ?? "",
+        createdAt: dbUser.created_at ?? nowIso,
+        timezone: dbUser.timezone ?? tz,
+        locale: dbUser.locale ?? locale,
+        picture: dbUser.picture ?? session.user.image ?? undefined,
+      });
+    } catch (err) {
+      console.error("Failed to load profile:", err);
+      toast({
+        title: "Hiba a profil betöltésekor",
+        description: "Próbáld újra később.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoadingProfile(false);
+    }
+  };
+
+  loadProfile();
+}, [status, session, toast]);
+
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
