@@ -1,11 +1,21 @@
 import AuthProvider from '@/components/providers/session-provider'
 import '../index.css'
-import type { Metadata } from 'next'
  
-export const metadata: Metadata = {
-  title: 'React App',
-  description: 'Web site created with Next.js.',
-}
+export const metadata = {
+  title: "Wavib – AI ügyfélkommunikáció WhatsAppon és Viberen",
+  description:
+    "Automatizáld az üzenetkezelést és az időpontfoglalást AI segítségével WhatsApp és Viber csatornákon.",
+  openGraph: {
+    title: "Wavib – AI ügyfélkommunikáció",
+    description:
+      "AI-alapú asszisztens, ami kezeli az ügyfélüzeneteket és időpontokat WhatsAppon és Viberen.",
+    url: "https://wavib.com",
+    siteName: "Wavib",
+    locale: "hu_HU",
+    type: "website",
+  },
+};
+
  
 export default function RootLayout({
   children,
