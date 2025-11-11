@@ -19,11 +19,28 @@ export default function PrivacyPage() {
 
       <h2 className="text-xl font-semibold mt-6 mb-2">1. Adatkezelő adatai</h2>
       <ul className="space-y-1">
-        <li><strong>Név:</strong> Bujákné Novák Bernadett egyéni vállalkozó</li>
-        <li><strong>Székhely:</strong> Magyarország, 1151 Budapest, Sződliget utca 11.</li>
-        <li><strong>Adószám:</strong> 59982944-1-42</li>
-        <li><strong>EU VAT:</strong> HU59982944</li>
-        <li><strong>E-mail:</strong> <a href="mailto:novakbernadett94@gmail.com" className="text-primary hover:underline">novakbernadett94@gmail.com</a></li>
+        <li>
+          <strong>Név:</strong> Bujákné Novák Bernadett egyéni vállalkozó
+        </li>
+        <li>
+          <strong>Székhely:</strong> Magyarország, 1151 Budapest, Sződliget utca
+          11.
+        </li>
+        <li>
+          <strong>Adószám:</strong> 59982944-1-42
+        </li>
+        <li>
+          <strong>EU VAT:</strong> HU59982944
+        </li>
+        <li>
+          <strong>E-mail:</strong>{" "}
+          <a
+            href="mailto:novakbernadett94@gmail.com"
+            className="text-primary hover:underline"
+          >
+            novakbernadett94@gmail.com
+          </a>
+        </li>
       </ul>
 
       <h2 className="text-xl font-semibold mt-6 mb-2">2. Az adatkezelés célja</h2>
@@ -38,28 +55,54 @@ export default function PrivacyPage() {
       <h2 className="text-xl font-semibold mt-6 mb-2">3. Kezelt adatok köre</h2>
       <ul className="list-disc ml-6 space-y-1">
         <li>Név, e-mail cím, profilkép (Google-bejelentkezéskor)</li>
-        <li>Ügyfeleid neve, telefonszáma, üzenet tartalma (WhatsApp / Viber API-n keresztül)</li>
+        <li>
+          Ügyfeleid neve, telefonszáma, üzenet tartalma (WhatsApp / Viber API-n
+          keresztül)
+        </li>
         <li>Időpontfoglalási adatok (idő, szolgáltatás, státusz)</li>
         <li>Technikai adatok: IP-cím, böngészőtípus, látogatási napló</li>
       </ul>
 
-      <h2 className="text-xl font-semibold mt-6 mb-2">4. Az adatkezelés jogalapja</h2>
+      <h2 className="text-xl font-semibold mt-6 mb-2">
+        4. Az adatkezelés jogalapja
+      </h2>
       <p>
-        Az adatkezelés a GDPR 6. cikk (1) bekezdés b) és f) pontja alapján történik:
+        Az adatkezelés a GDPR 6. cikk (1) bekezdés b) és f) pontja alapján
+        történik:
       </p>
       <ul className="list-disc ml-6 space-y-1">
-        <li><strong>Szerződés teljesítése</strong> – a Wavib szolgáltatás nyújtása érdekében.</li>
-        <li><strong>Jogos érdek</strong> – a platform biztonságos és személyre szabott működtetéséhez.</li>
+        <li>
+          <strong>Szerződés teljesítése</strong> – a Wavib szolgáltatás nyújtása
+          érdekében.
+        </li>
+        <li>
+          <strong>Jogos érdek</strong> – a platform biztonságos és személyre
+          szabott működtetéséhez.
+        </li>
       </ul>
 
-      <h2 className="text-xl font-semibold mt-6 mb-2">5. Adatfeldolgozók és adattovábbítás</h2>
+      <h2 className="text-xl font-semibold mt-6 mb-2">
+        5. Adatfeldolgozók és adattovábbítás
+      </h2>
       <p>Az alábbi adatfeldolgozókat vesszük igénybe:</p>
       <ul className="list-disc ml-6 space-y-1">
-        <li><strong>Vercel Inc.</strong> – webhosting szolgáltatás</li>
-        <li><strong>Neon / PostgreSQL</strong> – adatbázis</li>
-        <li><strong>n8n.cloud</strong> – automatizációs és workflow rendszer</li>
-        <li><strong>Meta Platforms Ireland Ltd.</strong> – WhatsApp Business Platform</li>
-        <li><strong>OpenAI, L.L.C.</strong> – szövegfeldolgozási és mesterséges intelligencia API</li>
+        <li>
+          <strong>Vercel Inc.</strong> – webhosting szolgáltatás
+        </li>
+        <li>
+          <strong>Neon / PostgreSQL</strong> – adatbázis
+        </li>
+        <li>
+          <strong>n8n.cloud</strong> – automatizációs és workflow rendszer
+        </li>
+        <li>
+          <strong>Meta Platforms Ireland Ltd.</strong> – WhatsApp Business
+          Platform
+        </li>
+        <li>
+          <strong>OpenAI, L.L.C.</strong> – szövegfeldolgozási és mesterséges
+          intelligencia API
+        </li>
       </ul>
 
       <h2 className="text-xl font-semibold mt-6 mb-2">6. Adatmegőrzés</h2>
@@ -80,25 +123,88 @@ export default function PrivacyPage() {
 
       <p className="mt-2">
         A kérelmeket az alábbi címen fogadjuk:{" "}
-        <a href="mailto:novakbernadett94@gmail.com" className="text-primary hover:underline">
+        <a
+          href="mailto:novakbernadett94@gmail.com"
+          className="text-primary hover:underline"
+        >
           novakbernadett94@gmail.com
         </a>
       </p>
 
-      <h2 className="text-xl font-semibold mt-6 mb-2">8. Panaszjog</h2>
+      <h2 className="text-xl font-semibold mt-6 mb-2">
+        8. Személyes adatok törlése
+      </h2>
+      <p className="mb-2">
+        A felhasználó bármikor kérheti a személyes adatai törlését az alábbi
+        módokon:
+      </p>
+      <ul className="list-disc ml-6 space-y-1 mb-2">
+        <li>
+          e-mail küldésével a{" "}
+          <a
+            href="mailto:novakbernadett94@gmail.com"
+            className="text-primary hover:underline"
+          >
+            novakbernadett94@gmail.com
+          </a>{" "}
+          címre,
+        </li>
+        <li>
+          vagy az alkalmazáson belül a{" "}
+          <strong>„Profil” → „Fiók törlésének kérése”</strong> menüpontban.
+        </li>
+      </ul>
+
+      <p className="mb-2">
+        A törlési kérelem beérkezése után a felhasználó adatai{" "}
+        <strong>legkésőbb 30 napon belül</strong> véglegesen törlésre kerülnek
+        vagy anonimizálódnak. A törlés után az adatok nem állíthatók vissza, a
+        törlés teljesítéséről e-mailben visszaigazolást küldünk.
+      </p>
+
+      <p className="mb-2">
+        Ha a felhasználó a fiókját Facebook vagy Google bejelentkezéssel hozta
+        létre, akkor a közösségi platformon tárolt alapadatok (pl. név, e-mail)
+        törlését külön az adott szolgáltatónál lehet kezdeményezni. A{" "}
+        <strong>Wavib</strong> kizárólag az azonosításhoz szükséges adatokat
+        tárolja (név, e-mail, profilazonosító), ezeket a fiók törlésével együtt
+        eltávolítjuk rendszerünkből.
+      </p>
+
+      <p className="mb-4">
+        Inaktív fiókok esetén előfordulhat, hogy a fiók és a kapcsolódó adatok{" "}
+        <strong>12 hónap folyamatos inaktivitás</strong> után automatikusan
+        törlésre vagy anonimizálásra kerülnek.
+      </p>
+
+      <h2 className="text-xl font-semibold mt-6 mb-2">9. Panaszjog</h2>
       <p>
         Panasz esetén fordulhatsz a{" "}
-        <strong>Nemzeti Adatvédelmi és Információszabadság Hatósághoz (NAIH)</strong>:
+        <strong>
+          Nemzeti Adatvédelmi és Információszabadság Hatósághoz (NAIH)
+        </strong>
+        :
       </p>
       <ul className="ml-6 list-disc space-y-1">
         <li>Cím: 1055 Budapest, Falk Miksa utca 9–11.</li>
-        <li>Web: <a href="https://naih.hu" className="text-primary hover:underline">https://naih.hu</a></li>
+        <li>
+          Web:{" "}
+          <a
+            href="https://naih.hu"
+            className="text-primary hover:underline"
+            target="_blank"
+            rel="noreferrer"
+          >
+            https://naih.hu
+          </a>
+        </li>
       </ul>
 
-      <h2 className="text-xl font-semibold mt-6 mb-2">9. Módosítás</h2>
+      <h2 className="text-xl font-semibold mt-6 mb-2">10. Módosítás</h2>
       <p>
-        Az adatkezelési tájékoztatót időről időre frissíthetjük. A módosításokat a
-        weboldalon közzétesszük, jelentős változás esetén e-mailben is értesítünk.
+        Az adatkezelési tájékoztatót időről időre frissíthetjük. A módosításokat
+        a weboldalon közzétesszük, jelentős változás esetén e-mailben is
+        értesítünk.
       </p>
     </div>
   );
