@@ -9,7 +9,7 @@ export async function POST(req: Request) {
       content: [{ type: "text", text: text || "Szia! Vercel API-ból 🚀" }]
     }
   };
-  const res = await fetch("https://api.msgio.com/send", {
+  const res = await fetch("https://api.messaggio.com/send", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
