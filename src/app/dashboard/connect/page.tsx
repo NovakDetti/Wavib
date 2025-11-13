@@ -23,7 +23,7 @@ export default function ConnectPage() {
   const [countdown, setCountdown] = useState<string>("");
   const [sending, setSending] = useState(false);
 
-  // visszaszámláló a magic link lejáratáig
+  
   useEffect(() => {
     if (!expiresAt) return;
     const t = setInterval(() => {
@@ -82,6 +82,18 @@ export default function ConnectPage() {
     }
   };
 
+  const handleClick = () => {
+    const params = new URLSearchParams({
+      client_id: process.env.META_APP_ID!,
+      redirect_uri: process.env.NEXT_PUBLIC_WH_CALLBACK_URL!,
+      response_type: "code",
+      scope: "whatsapp_business_management,whatsapp_business_messaging,business_management",
+      config_id: process.env.NEXT_PUBLIC_WH_CONFIG_ID!,
+    });
+    const url = `https://www.facebook.com/v21.0/dialog/oauth?${params.toString()}`;
+    window.location.href = url;
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto max-w-4xl p-6">
@@ -127,19 +139,9 @@ export default function ConnectPage() {
                     Business fiókodat.
                   </p>
 
-                  {/* GOMB – ez hívja a Next.js API-t */}
-                  <Button
-                    onClick={handleSendMagicLink}
-                    disabled={sending || magicLinkSent}
-                    className="w-full sm:w-auto"
-                  >
-                    <Mail className="mr-2 h-4 w-4" />
-                    {sending
-                      ? "Küldés..."
-                      : magicLinkSent
-                      ? "Magic link elküldve"
-                      : "Magic link küldése e-mailben"}
-                  </Button>
+              <Button onClick={handleClick} className="btn btn-primary">
+                Csatlakoztatom a WhatsApp Business számom
+              </Button>
                 </>
               )}
             </CardContent>
