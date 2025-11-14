@@ -42,46 +42,6 @@ export default function ConnectPage() {
     return () => clearInterval(t);
   }, [expiresAt]);
 
-  const handleSendMagicLink = async () => {
-    try {
-      setSending(true);
-
-    
-      const email = "novakbernadett94@gmail.com";
-      const userId = "demo-user-001";
-
-      const response = await fetch("/api/connect/magic-link", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, userId }),
-      });
-
-      console.log(response);
-
-      if (!response.ok) {
-        const err = await response.json();
-        throw new Error(err.error || "Hiba a magic link küldésekor");
-      }
-
-      const expires = new Date(Date.now() + 15 * 60 * 1000);
-      setMagicLinkSent(true);
-      setExpiresAt(expires);
-
-      toast({
-        title: "Magic link elküldve ✅",
-        description:
-          "Nézd meg az e-mailjeidet és kattints a linkre a WhatsApp Business fiók csatlakoztatásához.",
-      });
-    } catch (error: any) {
-      toast({
-        title: "Hiba",
-        description: error.message || "Nem sikerült a magic linket elküldeni.",
-      });
-    } finally {
-      setSending(false);
-    }
-  };
-
   const handleClick = () => {
     const params = new URLSearchParams({
       client_id: process.env.META_APP_ID!,
