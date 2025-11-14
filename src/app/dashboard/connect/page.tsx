@@ -12,7 +12,6 @@ import {
   CardTitle,
 } from "@/components/ui-elements/card";
 import { Button } from "@/components/ui-elements/button";
-import { toast } from "@/hooks/use-toast";
 
 export default function ConnectPage() {
   const [isConnected, setIsConnected] = useState(false);
@@ -42,17 +41,9 @@ export default function ConnectPage() {
     return () => clearInterval(t);
   }, [expiresAt]);
 
-  const handleClick = () => {
-    const params = new URLSearchParams({
-      client_id: process.env.META_APP_ID!,
-      redirect_uri: process.env.NEXT_PUBLIC_WH_CALLBACK_URL!,
-      response_type: "code",
-      scope: "whatsapp_business_management,whatsapp_business_messaging,business_management",
-      config_id: process.env.NEXT_PUBLIC_WH_CONFIG_ID!,
-    });
-    const url = `https://www.facebook.com/v21.0/dialog/oauth?${params.toString()}`;
-    window.location.href = url;
-  };
+const handleClick = () => {
+  window.location.href = "/api/meta/oauth/start";
+};
 
   return (
     <div className="min-h-screen bg-background">

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { sql } from "@/lib/db";
 import { encryptToken } from "@/lib/crypto";
 
-const META_APP_ID = process.env.META_APP_ID!;
+const NEXT_PUBLIC_META_APP_ID = process.env.NEXT_PUBLIC_META_APP_ID!;
 const META_CLIENT_SECRET = process.env.META_CLIENT_SECRET!;
 const META_REDIRECT_URI = process.env.META_REDIRECT_URI!;
 
@@ -32,7 +32,7 @@ export async function GET(req: NextRequest) {
   }
 
   const tokenUrl = new URL("https://graph.facebook.com/v21.0/oauth/access_token");
-  tokenUrl.searchParams.set("client_id", META_APP_ID);
+  tokenUrl.searchParams.set("client_id", NEXT_PUBLIC_META_APP_ID);
   tokenUrl.searchParams.set("client_secret", META_CLIENT_SECRET);
   tokenUrl.searchParams.set("redirect_uri", META_REDIRECT_URI);
   tokenUrl.searchParams.set("code", code);
@@ -50,7 +50,7 @@ export async function GET(req: NextRequest) {
   const shortLivedToken = tokenJson.access_token as string;
   const longUrl = new URL("https://graph.facebook.com/v21.0/oauth/access_token");
   longUrl.searchParams.set("grant_type", "fb_exchange_token");
-  longUrl.searchParams.set("client_id", META_APP_ID);
+  longUrl.searchParams.set("client_id", NEXT_PUBLIC_META_APP_ID);
   longUrl.searchParams.set("client_secret", META_CLIENT_SECRET);
   longUrl.searchParams.set("fb_exchange_token", shortLivedToken);
 
