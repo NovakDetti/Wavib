@@ -84,12 +84,16 @@ export async function GET(req: NextRequest) {
       "https://graph.facebook.com/v21.0/me/whatsapp_business_accounts?access_token=" +
         encodeURIComponent(accessToken),
     );
+
     const wabaJson = await wabaRes.json();
 
+    console.log("[WA CALLBACK] wabaJson:", JSON.stringify(wabaJson));
+
     if (!wabaRes.ok || !Array.isArray(wabaJson.data) || !wabaJson.data.length) {
-      console.error("[WA CALLBACK] No WABA found:", wabaJson);
-      return redirectWithStatus("no_waba_found");
+    console.error("[WA CALLBACK] No WABA found:", wabaJson);
+    return redirectWithStatus("no_waba_found");
     }
+
 
     const wabaId = wabaJson.data[0].id as string;
 
