@@ -4,7 +4,8 @@ import { encryptToken } from "@/lib/crypto";
 
 const META_APP_ID = process.env.META_APP_ID!;
 const META_CLIENT_SECRET = process.env.META_CLIENT_SECRET!;
-const META_REDIRECT_URI = process.env.META_REDIRECT_URI!;
+const META_REDIRECT_URI = process.env.META_REDIRECT_URI!; 
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL!;      
 
 export async function GET(req: NextRequest) {
   const url = new URL(req.url);
@@ -15,20 +16,23 @@ export async function GET(req: NextRequest) {
 
   if (error) {
     console.warn("Meta OAuth error:", error);
-    return redirectWithMessage("oauth_error");
+    return redirectWithStatus("oauth_error");
   }
 
   if (!code || !stateRaw) {
-    return redirectWithMessage("missing_code_or_state");
+    return redirectWithStatus("missing_code_or_state");
   }
 
-  let state: { user_id: string; email: string };
-
+  let state: { user_id: string; email?: string } | null = null;
   try {
     state = JSON.parse(stateRaw);
   } catch (e) {
     console.error("Invalid state JSON", e);
-    return redirectWithMessage("invalid_state");
+    return redirectWithStatus("invalid_state");
+  }
+
+  if (!state?.user_id) {
+    return redirectWithStatus("invalid_state");
   }
 
   const tokenUrl = new URL("https://graph.facebook.com/v21.0/oauth/access_token");
@@ -37,17 +41,16 @@ export async function GET(req: NextRequest) {
   tokenUrl.searchParams.set("redirect_uri", META_REDIRECT_URI);
   tokenUrl.searchParams.set("code", code);
 
-  const tokenRes = await fetch(tokenUrl.toString(), {
-    method: "GET",
-  });
-
+  const tokenRes = await fetch(tokenUrl.toString(), { method: "GET" });
   const tokenJson = await tokenRes.json();
-  if (!tokenRes.ok) {
+
+  if (!tokenRes.ok || !tokenJson.access_token) {
     console.error("Meta short-lived token error:", tokenJson);
-    return redirectWithMessage("token_exchange_failed");
+    return redirectWithStatus("token_exchange_failed");
   }
 
   const shortLivedToken = tokenJson.access_token as string;
+
   const longUrl = new URL("https://graph.facebook.com/v21.0/oauth/access_token");
   longUrl.searchParams.set("grant_type", "fb_exchange_token");
   longUrl.searchParams.set("client_id", META_APP_ID);
@@ -56,8 +59,10 @@ export async function GET(req: NextRequest) {
 
   const longRes = await fetch(longUrl.toString(), { method: "GET" });
   const longJson = await longRes.json();
+  const accessToken =
+    (longRes.ok && typeof longJson.access_token === "string" && longJson.access_token) ||
+    shortLivedToken;
 
-  const accessToken = (longRes.ok && longJson.access_token) || shortLivedToken;
 
   const wabaRes = await fetch(
     "https://graph.facebook.com/v21.0/me/whatsapp_business_accounts?access_token=" +
@@ -67,10 +72,12 @@ export async function GET(req: NextRequest) {
 
   if (!wabaRes.ok || !Array.isArray(wabaJson.data) || !wabaJson.data.length) {
     console.error("No WABA found:", wabaJson);
-    return redirectWithMessage("no_waba_found");
+    return redirectWithStatus("no_waba_found");
   }
 
   const wabaId = wabaJson.data[0].id as string;
+
+
   const phoneRes = await fetch(
     `https://graph.facebook.com/v21.0/${wabaId}/phone_numbers?access_token=${encodeURIComponent(
       accessToken,
@@ -80,15 +87,17 @@ export async function GET(req: NextRequest) {
 
   if (!phoneRes.ok || !Array.isArray(phoneJson.data) || !phoneJson.data.length) {
     console.error("No phone numbers found:", phoneJson);
-    return redirectWithMessage("no_phone_found");
+    return redirectWithStatus("no_phone_found");
   }
 
   const phone = phoneJson.data[0];
   const phoneNumberId = phone.id as string;
   const displayPhoneNumber = phone.display_phone_number as string;
-  const phoneE164 = phone.verified_name ?? null; 
+  const phoneE164 = (phone.phone_number as string | undefined) ?? null; 
+
 
   const { cipher, iv } = encryptToken(accessToken);
+
 
   await sql`
     INSERT INTO "ConvoPilot".whatsapp_connections (
@@ -103,7 +112,7 @@ export async function GET(req: NextRequest) {
     )
     VALUES (
       ${state.user_id},
-      ${wabaId},           -- ide rakhatod business_id-t, ha külön endpointtal kéred le
+      ${wabaId},    -- ha külön business_id-t akarsz, később lecserélheted
       ${wabaId},
       ${phoneNumberId},
       ${displayPhoneNumber},
@@ -112,21 +121,20 @@ export async function GET(req: NextRequest) {
       ${iv}
     )
     ON CONFLICT (phone_number_id) DO UPDATE
-      SET user_id = EXCLUDED.user_id,
-          business_id = EXCLUDED.business_id,
-          waba_id = EXCLUDED.waba_id,
-          display_phone_number = EXCLUDED.display_phone_number,
-          phone_e164 = EXCLUDED.phone_e164,
+      SET user_id             = EXCLUDED.user_id,
+          business_id         = EXCLUDED.business_id,
+          waba_id             = EXCLUDED.waba_id,
+          display_phone_number= EXCLUDED.display_phone_number,
+          phone_e164          = EXCLUDED.phone_e164,
           access_token_cipher = EXCLUDED.access_token_cipher,
-          access_token_iv = EXCLUDED.access_token_iv;
+          access_token_iv     = EXCLUDED.access_token_iv;
   `;
 
-  return redirectWithMessage("success");
+  return redirectWithStatus("success");
 }
 
-function redirectWithMessage(status: string) {
-  const base = process.env.NEXT_PUBLIC_BASE_URL!;
-  const url = new URL("/dashboard", base);
+function redirectWithStatus(status: string) {
+  const url = new URL("/dashboard", BASE_URL);
   url.searchParams.set("meta_status", status);
   return NextResponse.redirect(url.toString());
 }

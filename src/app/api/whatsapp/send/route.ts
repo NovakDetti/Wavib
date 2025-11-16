@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sql } from "@/lib/db";
+import { decryptToken } from "@/lib/crypto";
 
 export async function POST(req: NextRequest) {
   try {
@@ -12,25 +13,38 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Missing fields" }, { status: 400 });
     }
 
-    const rows = await sql<any>`
-      SELECT access_token_cipher
-      FROM "ConvoPilot".whatsapp_connections
-      WHERE phone_number_id = ${phone_number_id}
-      LIMIT 1
-    `;
+    type WhatsappConnectionRow = {
+        access_token_cipher: string;
+        access_token_iv: string;
+    };
+
+    const rows = (await sql`
+        SELECT access_token_cipher, access_token_iv
+        FROM "ConvoPilot".whatsapp_connections
+        WHERE phone_number_id = ${phone_number_id}
+        LIMIT 1
+    `) as WhatsappConnectionRow[];
 
     if (!rows.length) {
-      return NextResponse.json({ error: "No mapping" }, { status: 404 });
+    return NextResponse.json(
+        { error: "No mapping for this phone_number_id" },
+        { status: 404 }
+    );
     }
 
-    const token = rows[0].access_token_cipher as string;
+    const { access_token_cipher, access_token_iv } = rows[0];
+
+    const accessToken = decryptToken(
+    access_token_cipher,
+    access_token_iv
+    );
 
     const resWA = await fetch(
       `https://graph.facebook.com/v21.0/${phone_number_id}/messages`,
       {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${accessToken}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
