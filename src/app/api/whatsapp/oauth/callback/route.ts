@@ -2,10 +2,31 @@ import { NextRequest, NextResponse } from "next/server";
 import { sql } from "@/lib/db";
 import { encryptToken } from "@/lib/crypto";
 
+export const runtime = "nodejs";
+
 const META_APP_ID = process.env.META_APP_ID!;
 const META_CLIENT_SECRET = process.env.META_CLIENT_SECRET!;
 const META_REDIRECT_URI = process.env.META_REDIRECT_URI!;
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL!;
+
+/* export async function GET(req: NextRequest) {
+  try {
+    const url = new URL(req.url);
+    const code = url.searchParams.get("code");
+    const state = url.searchParams.get("state");
+
+    console.log("[WA CALLBACK] code =", code?.slice(0, 10), "...", "state =", state);
+
+    // Csak teszt redirect a dashboardra
+    const redirectUrl = new URL("/dashboard", BASE_URL);
+    redirectUrl.searchParams.set("meta_status", code ? "debug_ok" : "no_code");
+
+    return NextResponse.redirect(redirectUrl.toString());
+  } catch (err) {
+    console.error("[WA CALLBACK] hard error:", err);
+    return NextResponse.json({ error: "callback_failed" }, { status: 500 });
+  }
+}
 
 export async function GET(req: NextRequest) {
   const url = new URL(req.url);
@@ -130,7 +151,7 @@ export async function GET(req: NextRequest) {
   `;
 
   return redirectWithStatus("success");
-}
+} */
 
 function redirectWithStatus(status: string) {
   const url = new URL("/dashboard", BASE_URL);
