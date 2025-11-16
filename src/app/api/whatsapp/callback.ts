@@ -10,7 +10,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const tokenRes = await fetch(
     `https://graph.facebook.com/v21.0/oauth/access_token?` +
-      `client_id=${process.env.NEXT_PUBLIC_META_APP_ID}&` +
+      `client_id=${process.env.META_APP_ID}&` +
       `client_secret=${process.env.META_APP_SECRET}&` +
       `redirect_uri=${encodeURIComponent(process.env.WH_CALLBACK_URL!)}&` +
       `code=${code}`

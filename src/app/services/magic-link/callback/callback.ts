@@ -29,7 +29,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const { userId, email } = jwt.verify(state, process.env.JWT_SECRET!) as any;
 
     const token1 = await gget("/oauth/access_token", {
-      client_id: process.env.NEXT_PUBLIC_META_APP_ID!,
+      client_id: process.env.META_APP_ID!,
       redirect_uri: process.env.META_REDIRECT_URI!,
       client_secret: process.env.META_APP_SECRET!,
       code,
@@ -38,7 +38,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const token2 = await gget("/oauth/access_token", {
       grant_type: "fb_exchange_token",
-      client_id: process.env.NEXT_PUBLIC_META_APP_ID!,
+      client_id: process.env.META_APP_ID!,
       client_secret: process.env.META_APP_SECRET!,
       fb_exchange_token: accessToken,
     });
