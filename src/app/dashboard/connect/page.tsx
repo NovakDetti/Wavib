@@ -42,7 +42,7 @@ export default function ConnectPage() {
   }, [expiresAt]);
 
 const handleClick = () => {
-  window.location.href = "/api/meta/oauth/start";
+  window.location.href = "/api/whatsapp/oauth/start";
 };
 
   return (
